@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 
+<link rel="import" href="pz-title.html">
 <!--
 `pz-d3` Polymer Visualization web component using the D3 framework.
 
@@ -7,15 +8,22 @@
 -->
 <dom-module id="pz-d3">
   <template>
+    <content></content>
   </template>
 </dom-module>
 
 <script>
 (function() {
-  "use strict";
+  'use strict';
 
   Polymer({
     is: 'pz-d3',
+
+    properties: {
+      width: Number,
+      height: Number,
+      margins: Object
+    }
   });
 })();
 </script>
