@@ -1,0 +1,27 @@
+{
+  "name": "pz-d3",
+  "version": "0.0.1",
+  "description": "Polymer Visualization web component using the D3 framework",
+  "main": "pz-d3.html",
+  "authors": [
+    "Maxime Lavigne (malavv)"
+  ],
+  "license": "UNLICENSED",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "keywords": [
+    "web-component",
+    "polymer",
+    "visualization",
+    "chart"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.1.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.1.7",
+    "web-component-tester": "*"
+  }
+}
