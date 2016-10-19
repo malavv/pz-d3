@@ -10,18 +10,17 @@
   'use strict';
 
   Polymer({
-    is: 'pz-bars',
+    is: 'pz-points',
 
     properties: {
       x: String,
-      ymin: Number,
-      ymax: String
+      y: String
     },
 
-    valueKey() { return this.ymax; },
+    valueKey() { return this.y; },
 
     ns() {
-      return 'rect'
+      return 'circle'
     },
 
     draw(xScale, yScale, meta, height) {
@@ -30,10 +29,9 @@
 
       return (a, b, c) => {
         a
-         .attr("x", d => xScale(d[xidx]))
-         .attr("y", d => yScale(d[yidx]))
-         .attr("width", xScale.bandwidth())
-         .attr("height", d => { return height - yScale(d[yidx])});
+         .attr("cx", d => xScale(d[xidx]))
+         .attr("cy", d => yScale(d[yidx]))
+         .attr("r", xScale.bandwidth() / 2.0);
       }
     }
   });

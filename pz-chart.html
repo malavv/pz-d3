@@ -30,7 +30,7 @@
       return this.getEffectiveChildren().filter(n => /pz-axis/.test(n.localName));
     },
     getMarkers() {
-      return this.getEffectiveChildren().filter(n => /pz-bars/.test(n.localName));
+      return this.getEffectiveChildren().filter(n => /pz-(bars|points)/.test(n.localName));
     },
 
     attached() {
@@ -102,26 +102,14 @@
 
       // x and y scales.
       let xScale = this.scales[marker.x];
-      let yScale = this.scales[marker.ymax];
-
-      let xidx = 1;
-      let yidx = 2;
+      let yScale = this.scales[marker.valueKey()];
 
       this.graph.selectAll(".bar")
         .data(data)
-        .enter().append("rect")
+        .enter().append(marker.ns())
           .attr("class", "bar")
-          .attr("x", d => {
-            return xScale(d[xidx])
-          })
           .attr('fill', '#4ba99f')
-          .attr("y", d => {
-            return yScale(d[yidx])
-          })
-          .attr("width", xScale.bandwidth())
-          .attr("height", d => {
-            return this.height - yScale(d[yidx])
-          });
+          .call(marker.draw(xScale, yScale, this.meta, this.height));
     }
   });
 })();
