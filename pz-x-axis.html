@@ -1,0 +1,29 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+  `pz-x-axis`.
+-->
+<dom-module id="pz-x-axis">
+  <template>
+    <style>
+      :host {}
+    </style>
+    x-axis - key: <span>[[key]]</span>, min: <span>[[min]]</span>, max: <span>[[max]]</span>
+  </template>
+</dom-module>
+
+<script>
+(function() {
+  'use strict';
+
+  Polymer({
+    is: 'pz-x-axis',
+
+    properties: {
+      key: String,
+      max: Number,
+      min: Number
+    }
+  });
+})();
+</script>
