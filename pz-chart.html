@@ -1,0 +1,98 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+<!--
+  `pz-bar-chart` is a Bar Chart element.
+-->
+<dom-module id="pz-chart">
+  <template>
+    <style>
+      svg {
+        background-color: #ccc;
+      }
+    </style>
+    <svg></svg>
+
+    <content id="content"></content>
+
+    <pz-axis-ordinal orient='bottom' key='phio:stratification_CLSC'></pz-axis-ordinal>
+  </template>
+</dom-module>
+
+<script>
+(function() {
+  'use strict';
+
+  Polymer({
+    is: 'pz-chart',
+
+    properties: {},
+
+    getAxis() {
+      return this.getEffectiveChildren().filter(n => /pz-axis/.test(n.localName));
+    },
+    getMarkers() {
+      return this.getEffectiveChildren().filter(n => /pz-bars/.test(n.localName));
+    },
+
+    attached() {
+      this.height = 500;
+      this.width = 500;
+      this.scales = {};
+      this.padding = {top: 10, right: 10, bottom: 30, left: 30};
+
+      this.svg = d3.select(Polymer.dom(this.root).querySelector('svg'))
+          .attr("width", this.width + this.padding.left + this.padding.right)
+          .attr("height", this.height + this.padding.top + this.padding.bottom);
+      this.graph = this.svg.append("g")
+            .attr("class", "graph")
+            .attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")");
+
+      this.getAxis().forEach(axis => this.addAxis(axis));
+      this.getMarkers().forEach(marker => this.addMarker(marker))
+    },
+
+    addAxis(axis) {
+      // TODO(malavv) : Managing multiple y axis.
+      if (axis.orient === 'left') {
+        let scale = axis.scale().rangeRound([this.height, 0]);
+        this.graph.append("g")
+          .attr("class", "axis")
+          .call(axis.axis(scale));
+        this.scales[axis.key] = scale;
+        return;
+      }
+      if (axis.orient === 'bottom') {
+        let scale = axis.scale().range([0, this.width]).round(true);
+        this.graph.append("g")
+          .attr("class", "axis")
+          .attr("transform", "translate(0," + this.height + ")")
+          .call(axis.axis(scale));
+        this.scales[axis.key] = scale;
+        return;
+      }
+    },
+
+    addMarker(marker) {
+      // Fake Data
+      let barData = [];
+      for (let i = 1; i <= 10; i++)
+        barData.push(i.toString());
+
+      // x and y scales.
+      let x = this.scales[marker.x];
+      let y = this.scales[marker.ymax];
+
+      this.graph.selectAll(".bar")
+      .data(barData)
+      .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", d => { return x(d); })
+        .attr("y", d => { return y(d); })
+        .attr("width", x.bandwidth())
+        .attr("height", d => { return this.height - y(d); });
+    }
+  });
+})();
+</script>

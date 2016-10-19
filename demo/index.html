@@ -6,26 +6,27 @@
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="data.js"></script>
+
   <link rel="import" href="../pz-d3.html">
   <style></style>
 
 </head>
 <body>
-
   <p>A simple <code>pz-d3</code> looks like this:</p>
 
   <pz-d3 width=500 height=500 margins='{}'>
     <pz-title>pz-d3 First Chart</pz-title>
 
-    <pz-bar-chart>
-      <pz-x-axis key='phio:stratification_CLSC'></pz-x-axis>
-      <pz-y-axis min=40000 max=50000 key='&lt;unimplemented:mean&gt;'></pz-y-axis>
-    </pz-bar-chart>
+    <pz-chart>
+      <pz-axis-ordinal orient='bottom' key='phio:stratification_CLSC'></pz-axis-ordinal>
+      <pz-axis-linear orient='left' key='<unimplemented:mean>'></pz-axis-linear>
 
-    <pz-meta
-        indicator='{"ref": "phio:MeanHouseholdIncome", "value": "<unimplemented:mean", "unit": "phio:unit_CAD"}'
-        structure='[{"ref":"phio:tu_year", "codeList":[]}, {"ref":"phio:stratification_CLSC", "codeList":[{"code":6033, "value":"phio:clsc_Robert-Cliche"}]}, {"ref": "<unimplemented:mean>", "datatype": "number"}, {"ref": "<unimplemented:std>", "datatype": "number"}]'>
-    </pz-meta>
+      <pz-bars
+          x='phio:stratification_CLSC'
+          ymin=0 ymax='<unimplemented:mean>'></pz-bars>
+    </pz-chart>
+
+    <pz-meta></pz-meta>
     <pz-data observations='[
       [
         2009,
@@ -35,6 +36,7 @@
       ]
     ]'></pz-data>
   </pz-d3>
+  <pz-d3-loader></pz-d3-loader>
 
 </body>
 </html>

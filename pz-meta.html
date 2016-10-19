@@ -10,7 +10,18 @@
   Polymer({
     is: 'pz-meta',
 
-    properties: {}
+    properties: {
+      indicator: {
+        type: Object,
+        notify: true,
+        value: indicator
+      },
+      structure: {
+        type: Object,
+        notify: true,
+        value: structure
+      }
+    }
   });
 })();
 </script>

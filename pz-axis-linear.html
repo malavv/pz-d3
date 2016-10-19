@@ -1,0 +1,29 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+  `pz-axis-linear`.
+-->
+<script>
+(function() {
+  'use strict';
+
+  Polymer({
+    is: 'pz-axis-linear',
+
+    properties: {
+      orient: String,
+      key: String
+    },
+
+    scale() {
+      let width = 500;
+      let obs = 5;
+      let barWidth = width / obs;
+      return d3.scaleLinear().domain([0, 10]);
+    },
+    axis(scale) {
+      return d3.axisLeft(scale);
+    }
+  });
+})();
+</script>

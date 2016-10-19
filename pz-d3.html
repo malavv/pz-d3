@@ -1,11 +1,14 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<link rel="import" href="pz-bar-chart.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="pz-chart.html">
 <link rel="import" href="pz-data.html">
 <link rel="import" href="pz-meta.html">
 <link rel="import" href="pz-title.html">
-<link rel="import" href="pz-x-axis.html">
-<link rel="import" href="pz-y-axis.html">
+<link rel="import" href="pz-axis-ordinal.html">
+<link rel="import" href="pz-axis-linear.html">
+<link rel="import" href="pz-bars.html">
 
 <!--
 `pz-d3` Polymer Visualization web component using the D3 framework.
@@ -14,6 +17,11 @@
 -->
 <dom-module id="pz-d3">
   <template>
+    <style>
+      ::content {
+        @apply(--layout-vertical);
+      }
+    </style>
     <content></content>
   </template>
 </dom-module>
