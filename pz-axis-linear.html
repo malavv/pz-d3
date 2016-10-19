@@ -12,14 +12,18 @@
 
     properties: {
       orient: String,
-      key: String
+      key: String,
+      min: Number,
+      max: Number
     },
 
-    scale() {
-      let width = 500;
-      let obs = 5;
-      let barWidth = width / obs;
-      return d3.scaleLinear().domain([0, 10]);
+    scale(meta, data) {
+      let idx = meta.map(m => m.ref).indexOf(this.key);
+      if (this.min == null)
+        this.min = Math.min.apply(null, data.map(o => o[idx]));
+      if (this.max == null)
+        this.max = Math.max.apply(null, data.map(o => o[idx]));
+      return d3.scaleLinear().domain([this.min, this.max]);
     },
     axis(scale) {
       return d3.axisLeft(scale);

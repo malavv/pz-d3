@@ -40,7 +40,11 @@
       this.height = 500;
       this.width = 500;
       this.scales = {};
-      this.padding = {top: 10, right: 10, bottom: 30, left: 30};
+      this.padding = {top: 10, right: 10, bottom: 50, left: 50};
+      this.meta = this.parentElement.meta;
+      this.data = this.parentElement.data.filter(o => o[0] === 2009);
+
+      this.data = this.sortDataForMarker(this.getMarkers()[0], this.meta, this.data);
 
       this.svg = d3.select(Polymer.dom(this.root).querySelector('svg'))
           .attr("width", this.width + this.padding.left + this.padding.right)
@@ -53,10 +57,19 @@
       this.getMarkers().forEach(marker => this.addMarker(marker))
     },
 
+    sortDataForMarker(marker, meta, data) {
+        let idx = meta.map(m => m.ref).indexOf(marker.valueKey());
+        return data.sort((lhs, rhs) => lhs[idx] - rhs[idx]);
+    },
+
     addAxis(axis) {
+      let
+        meta = this.meta,
+        data = this.data
+
       // TODO(malavv) : Managing multiple y axis.
       if (axis.orient === 'left') {
-        let scale = axis.scale().rangeRound([this.height, 0]);
+        let scale = axis.scale(meta, data).rangeRound([this.height, 0]);
         this.graph.append("g")
           .attr("class", "axis")
           .call(axis.axis(scale));
@@ -64,34 +77,53 @@
         return;
       }
       if (axis.orient === 'bottom') {
-        let scale = axis.scale().range([0, this.width]).round(true);
+        let scale = axis.scale(meta, data).range([0, this.width]).round(true);
         this.graph.append("g")
           .attr("class", "axis")
           .attr("transform", "translate(0," + this.height + ")")
-          .call(axis.axis(scale));
+          .call(axis.axis(scale))
+          .selectAll("text")
+            .attr("y", 0)
+            .attr("x", 9)
+            .attr("dy", ".35em")
+            .attr("transform", "rotate(90)")
+            .style("text-anchor", "start");
         this.scales[axis.key] = scale;
         return;
       }
     },
 
     addMarker(marker) {
+      let
+        meta = this.meta,
+        data = this.data;
+
       // Fake Data
       let barData = [];
       for (let i = 1; i <= 10; i++)
         barData.push(i.toString());
 
       // x and y scales.
-      let x = this.scales[marker.x];
-      let y = this.scales[marker.ymax];
+      let xScale = this.scales[marker.x];
+      let yScale = this.scales[marker.ymax];
+
+      let xidx = 1;
+      let yidx = 2;
 
       this.graph.selectAll(".bar")
-      .data(barData)
-      .enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", d => { return x(d); })
-        .attr("y", d => { return y(d); })
-        .attr("width", x.bandwidth())
-        .attr("height", d => { return this.height - y(d); });
+        .data(data)
+        .enter().append("rect")
+          .attr("class", "bar")
+          .attr("x", d => {
+            return xScale(d[xidx])
+          })
+          .attr("y", d => {
+            return yScale(d[yidx])
+          })
+          .attr("width", xScale.bandwidth())
+          .attr("height", d => {
+            return this.height - yScale(d[yidx])
+          });
     }
   });
 })();

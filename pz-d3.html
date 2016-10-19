@@ -36,7 +36,15 @@
     properties: {
       width: Number,
       height: Number,
-      margins: Object
+      margins: Object,
+      meta: {
+        type: Array,
+        value: () => structure
+      },
+      data: {
+        type: Array,
+        value: () => observations
+      }
     }
   });
 })();
