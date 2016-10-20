@@ -21,7 +21,8 @@
         let
           multi = document.querySelector('#multi-bar-char-pts'),
           barsChart = document.querySelector('#bar-char-bars'),
-          dist = document.querySelector('#dist-chart');
+          dist = document.querySelector('#dist-chart'),
+          prob = document.querySelector('#prob-chart');
 
         barsChart.setMeta(structure);
         barsChart.setObservations(observations.filter(n => n[0] === 2009));
@@ -30,6 +31,49 @@
 
         dist.setMeta(structure_age);
         dist.setObservations(observations_age);
+
+        let newObs = [];
+
+        let xScale = d3.scaleLinear()
+          .domain([-0.001, Math.max.apply(null, obs_prev_age.map(o => o[2]) )+ 0.001])
+          .rangeRound([0, 500]);
+
+        _.uniq(obs_prev_age.map(o => o[1])).forEach(year => {
+          let slice = obs_prev_age.filter(o => o[1] === year);
+          let bins = d3.histogram().value(d => d[2]).domain(xScale.domain()).thresholds(xScale.ticks(7))(slice);
+
+          bins.forEach((bin, idx) => {
+            newObs.push([year, idx, bin.length]);
+          })
+        });
+
+        let newStruct = [];
+        newStruct.push({
+          "ref": "phio:tu_year"
+        });
+        newStruct.push({
+          "ref": "<unimplemented:bin>",
+          "datatype": "number",
+          "codeList": [
+            {"code": 0},
+            {"code": 1},
+            {"code": 2},
+            {"code": 3},
+            {"code": 4},
+            {"code": 5},
+            {"code": 6},
+            {"code": 7},
+            {"code": 8},
+            {"code": 9},
+            {"code": 10}]
+        });
+        newStruct.push({
+          "ref": '<unimplemented:freq>',
+          "datatype": "number"
+        });
+
+        prob.setMeta(newStruct);
+        prob.setObservations(newObs);
       });
     </script>
     <pz-d3 id="multi-bar-char-pts" width=500 height=500 margins='{}'>
@@ -90,6 +134,24 @@
           y='<unimplemented:incidence>'
           depth='phio:tu_year'
           color='rgba(124,240,10,0.5)'></pz-dist>
+      </pz-chart>
+
+      <pz-meta></pz-meta>
+      <pz-data></pz-data>
+    </pz-d3>
+    <pz-d3 id="prob-chart" width=500 height=500 margins='{}'>
+      <pz-title>Prevalence Distribution by age graph.</pz-title>
+
+      <pz-chart>
+        <pz-axis-ordinal orient='bottom' key='<unimplemented:bin>'></pz-axis-ordinal>
+        <pz-axis-linear orient='left' key='<unimplemented:freq>'></pz-axis-linear>
+        <pz-axis-linear orient='left' key='phio:tu_year'></pz-axis-linear>
+
+        <pz-dist
+          x='<unimplemented:bin>'
+          y='<unimplemented:freq>'
+          depth='phio:tu_year'
+          color='black'></pz-dist>
       </pz-chart>
 
       <pz-meta></pz-meta>

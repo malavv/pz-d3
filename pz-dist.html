@@ -36,6 +36,7 @@
       let xidx = meta.map(m => m.ref).indexOf(this.x);
       let yidx = meta.map(m => m.ref).indexOf(this.valueKey());
       let depthIdx = meta.map(m => m.ref).indexOf(this.depth);
+      let colorScale = d3.scaleBand().domain(_.uniq(data.map(o => o[depthIdx])).sort());
 
       return (g) => {
         g.append("path")
@@ -46,17 +47,25 @@
                   return d[depthIdx] === depth;
                 })
                 .x(d => {
-                  return xScale(d[xidx]);
+                  let t = xScale(d[xidx]);
+                  if (Number.isNaN(t))
+                    debugger;
+                  return t;
                 })
                 .y(d => {
-                  return yScale(d[yidx]);
+                  let t = yScale(d[yidx]);
+                  if (Number.isNaN(t))
+                    debugger;
+                  return t;
                 })
                 .curve(d3.curveCatmullRom.alpha(0.5))
                 (data.filter(d => d[depthIdx] === depth));
           })
-          .attr("stroke", "blue")
+          .attr("stroke", this.color)
           .attr("stroke-width", 2)
-          .attr("opacity", 0.4)
+          .attr("opacity", depth =>  {
+            return 1.0 - colorScale(depth);
+          })
          .attr("fill", "none");
       }
     }
