@@ -1,0 +1,76 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+<!--
+  `pz-dist`
+-->
+<script>
+(function() {
+  'use strict';
+
+  Polymer({
+    is: 'pz-dist',
+
+    properties: {
+      x: String,
+      y: String,
+      depth: String,
+      color: String
+    },
+
+    valueKey() {
+      return this.y;
+    },
+
+    drawByDim() { return this.depth; },
+    sortedByDim() { return this.x; },
+
+    ns() { return 'g' },
+
+    isDrawingPerObs() {
+      return this.depth == null;
+    },
+
+    draw(graph, xScale, yScale, meta, height, data) {
+      let xidx = meta.map(m => m.ref).indexOf(this.x);
+      let yidx = meta.map(m => m.ref).indexOf(this.valueKey());
+      let depthIdx = meta.map(m => m.ref).indexOf(this.depth);
+
+      return (g) => {
+        g.append("path")
+          .attr('class', 'line')
+          .attr('d', depth => {
+            return d3.line()
+                .defined(d => {
+                  return d[depthIdx] === depth;
+                })
+                .x(d => {
+                  return xScale(d[xidx]);
+                })
+                .y(d => {
+                  return yScale(d[yidx]);
+                })
+                .curve(d3.curveCatmullRom.alpha(0.5))
+                (data.filter(d => d[depthIdx] === depth));
+          })
+          .attr("stroke", "blue")
+          .attr("stroke-width", 2)
+          .attr("opacity", 0.4)
+         .attr("fill", "none");
+      }
+    }
+         //.attr("cx", d => {
+//           return xScale(d[xidx]);
+         //})
+         //.attr("cy", d => yScale(d[yidx]))
+         //.attr("r", 5);
+        //
+        // g.attr("d", d => line(data))
+        //  .attr("stroke", "blue")
+        //  .attr("stroke-width", 2)
+        //  .attr("fill", "none");
+
+  });
+})();
+</script>

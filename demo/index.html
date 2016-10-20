@@ -6,6 +6,7 @@
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="data.js"></script>
+  <script src="data_age.js"></script>
 
   <link rel="import" href="../pz-d3.html">
   <style></style>
@@ -19,12 +20,16 @@
       document.addEventListener("WebComponentsReady", function(event) {
         let
           multi = document.querySelector('#multi-bar-char-pts'),
-          barsChart = document.querySelector('#bar-char-bars');
+          barsChart = document.querySelector('#bar-char-bars'),
+          dist = document.querySelector('#dist-chart');
 
         barsChart.setMeta(structure);
         barsChart.setObservations(observations.filter(n => n[0] === 2009));
         multi.setMeta(structure);
         multi.setObservations(observations);
+
+        dist.setMeta(structure_age);
+        dist.setObservations(observations_age);
       });
     </script>
     <pz-d3 id="multi-bar-char-pts" width=500 height=500 margins='{}'>
@@ -56,7 +61,6 @@
       <pz-meta></pz-meta>
       <pz-data></pz-data>
     </pz-d3>
-
     <pz-d3 width=500 height=500 margins='{}'>
       <pz-title>Bar Chart with bars.</pz-title>
 
@@ -73,7 +77,24 @@
       <pz-data
           observations='[[0, 0], [1, 1], [2, 2], [3, 3]]'></pz-data>
     </pz-d3>
+    <pz-d3 id="dist-chart" width=500 height=500 margins='{}'>
+      <pz-title>Incidence Distribution by age graph.</pz-title>
 
+      <pz-chart>
+        <pz-axis-ordinal orient='bottom' key='phio:stratification_5yr_age_groups'></pz-axis-ordinal>
+        <pz-axis-linear orient='left' key='<unimplemented:incidence>' min=0></pz-axis-linear>
+        <pz-axis-linear orient='left' key='phio:tu_year'></pz-axis-linear>
+
+        <pz-dist
+          x='phio:stratification_5yr_age_groups'
+          y='<unimplemented:incidence>'
+          depth='phio:tu_year'
+          color='rgba(124,240,10,0.5)'></pz-dist>
+      </pz-chart>
+
+      <pz-meta></pz-meta>
+      <pz-data></pz-data>
+    </pz-d3>
   </template>
 </body>
 </html>

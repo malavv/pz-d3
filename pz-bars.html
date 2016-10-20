@@ -26,6 +26,8 @@
       return 'rect'
     },
 
+    isDrawingPerObs() { return true; },
+
     _clip() {
       if (this.halfLeft != null)
         return 'polygon(0 0, 50% 0, 50% 100%, 0% 100%)';
@@ -34,9 +36,11 @@
       return null
     },
 
+    sortedByDim() { return this.valueKey(); },
+
     draw(graph, xScale, yScale, meta, height) {
-      let xidx = 1;
-      let yidx = 2;
+      let xidx = meta.map(m => m.ref).indexOf(this.x);
+      let yidx = meta.map(m => m.ref).indexOf(this.ymax);
 
       return (a, b, c) => {
         a

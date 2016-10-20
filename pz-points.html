@@ -34,7 +34,11 @@
       return null
     },
 
-    draw(graph, xScale, yScale, meta, height, idx) {
+    isDrawingPerObs() { return true; },
+
+    sortedByDim() { return this.valueKey(); },
+
+    draw(graph, xScale, yScale, meta, height) {
       let xidx = meta.map(m => m.ref).indexOf(this.x);
       let yidx = meta.map(m => m.ref).indexOf(this.y);
       let r = 7.0;
@@ -43,7 +47,7 @@
         let clipPath = this._clip();
         a
          .attr("cx", d => xScale(d[xidx]))
-         .attr("cy", d => yScale(d[yidx] + (idx * 1000)));
+         .attr("cy", d => yScale(d[yidx]));
 
        a.attr("r",  xScale.bandwidth ? xScale.bandwidth() / 2.0 : r);
 
