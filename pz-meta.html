@@ -14,12 +14,12 @@
       indicator: {
         type: Object,
         notify: true,
-        value: indicator
+        value: () => ({})
       },
       structure: {
-        type: Object,
+        type: Array,
         notify: true,
-        value: structure
+        value: () => []
       }
     }
   });

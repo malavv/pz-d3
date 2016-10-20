@@ -40,12 +40,36 @@
       margins: Object,
       meta: {
         type: Array,
-        value: () => structure
+        notify: true
       },
       data: {
         type: Array,
-        value: () => observations
+        notify: true
       }
+    },
+
+    setMeta(meta) {
+      this.getEffectiveChildNodes()
+          .filter(n => n.localName === 'pz-meta')[0]
+          .set('structure', meta)
+    },
+    setObservations(observations) {
+      this.getEffectiveChildNodes()
+          .filter(n => n.localName === 'pz-data')[0]
+          .set('observations', observations);
+
+      this.getEffectiveChildNodes()
+          .filter(n => n.localName === 'pz-chart')[0].onDataChanged();
+    },
+
+    getMeta() {
+      let meta = this.getEffectiveChildNodes().filter(n => n.localName === 'pz-meta');
+      return meta[0].structure;
+    },
+
+    getData() {
+      let data = this.getEffectiveChildNodes().filter(n => n.localName === 'pz-data');
+      return data[0].observations;
     }
   });
 })();

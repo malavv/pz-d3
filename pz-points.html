@@ -35,15 +35,17 @@
     },
 
     draw(graph, xScale, yScale, meta, height, idx) {
-      let xidx = 1;
-      let yidx = 2;
+      let xidx = meta.map(m => m.ref).indexOf(this.x);
+      let yidx = meta.map(m => m.ref).indexOf(this.y);
+      let r = 7.0;
 
       return (a, b, c) => {
         let clipPath = this._clip();
         a
          .attr("cx", d => xScale(d[xidx]))
-         .attr("cy", d => yScale(d[yidx] + (idx * 1000)))
-         .attr("r", xScale.bandwidth() / 2.0);
+         .attr("cy", d => yScale(d[yidx] + (idx * 1000)));
+
+       a.attr("r",  xScale.bandwidth ? xScale.bandwidth() / 2.0 : r);
 
         if (clipPath != null)
           a.attr("clip-path",  clipPath);

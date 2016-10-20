@@ -38,10 +38,6 @@
       this.width = 500;
       this.scales = {};
       this.padding = {top: 10, right: 10, bottom: 50, left: 50};
-      this.meta = this.parentElement.meta;
-      this.data = this.parentElement.data.filter(o => o[0] === 2009);
-
-      this.data = this.sortDataForMarker(this.getMarkers()[0], this.meta, this.data);
 
       this.svg = d3.select(Polymer.dom(this.root).querySelector('svg'))
           .attr("width", this.width + this.padding.left + this.padding.right)
@@ -50,6 +46,15 @@
             .attr("class", "graph")
             .attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")");
 
+      if (this.parentElement.getMeta() && this.parentElement.getData())
+        this.onDataChanged();
+    },
+
+    onDataChanged() {
+      // On new Data
+      this.meta = this.parentElement.getMeta();
+      this.data = this.parentElement.getData();
+      this.data = this.sortDataForMarker(this.getMarkers()[0], this.meta, this.data);
       this.getAxis().forEach(axis => this.addAxis(axis));
       this.getMarkers().forEach((marker, idx) => this.addMarker(marker, idx))
     },
@@ -74,7 +79,11 @@
         return;
       }
       if (axis.orient === 'bottom') {
-        let scale = axis.scale(meta, data).range([0, this.width]).round(true).padding(0.1);
+        let scale = axis.scale(meta, data).range([0, this.width]);
+
+        if (axis.localName == 'pz-axis-ordinal')
+          scale.padding(0.1);
+
         this.graph.append("g")
           .attr("class", "axis")
           .attr("transform", "translate(0," + this.height + ")")
