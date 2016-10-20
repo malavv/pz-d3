@@ -15,7 +15,9 @@
     properties: {
       x: String,
       ymin: Number,
-      ymax: String
+      ymax: String,
+      halfLeft: Boolean,
+      halfRight: Boolean
     },
 
     valueKey() { return this.ymax; },
@@ -24,7 +26,15 @@
       return 'rect'
     },
 
-    draw(xScale, yScale, meta, height) {
+    _clip() {
+      if (this.halfLeft != null)
+        return 'polygon(0 0, 50% 0, 50% 100%, 0% 100%)';
+      if (this.halfRight != null)
+        return 'polygon(50% 0, 50% 100%, 100% 100%, 100% 0)';
+      return null
+    },
+
+    draw(graph, xScale, yScale, meta, height) {
       let xidx = 1;
       let yidx = 2;
 
@@ -34,6 +44,10 @@
          .attr("y", d => yScale(d[yidx]))
          .attr("width", xScale.bandwidth())
          .attr("height", d => { return height - yScale(d[yidx])});
+
+        let clipPath = this._clip();
+        if (clipPath != null)
+          a.attr("clip-path",  clipPath);
       }
     }
   });

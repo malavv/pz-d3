@@ -51,7 +51,7 @@
             .attr("transform", "translate(" + this.padding.left + "," + this.padding.top + ")");
 
       this.getAxis().forEach(axis => this.addAxis(axis));
-      this.getMarkers().forEach(marker => this.addMarker(marker))
+      this.getMarkers().forEach((marker, idx) => this.addMarker(marker, idx))
     },
 
     sortDataForMarker(marker, meta, data) {
@@ -90,26 +90,17 @@
       }
     },
 
-    addMarker(marker) {
-      let
-        meta = this.meta,
-        data = this.data;
-
-      // Fake Data
-      let barData = [];
-      for (let i = 1; i <= 10; i++)
-        barData.push(i.toString());
-
+    addMarker(marker, idx) {
+      console.log(idx);
       // x and y scales.
       let xScale = this.scales[marker.x];
       let yScale = this.scales[marker.valueKey()];
 
-      this.graph.selectAll(".bar")
-        .data(data)
+      this.graph.selectAll(".marker-" + idx.toString())
+        .data(this.data)
         .enter().append(marker.ns())
-          .attr("class", "bar")
-          .attr('fill', '#4ba99f')
-          .call(marker.draw(xScale, yScale, this.meta, this.height));
+          .attr("class", "marker-" + idx.toString())
+          .call(marker.draw(this.graph, xScale, yScale, this.meta, this.height, idx));
     }
   });
 })();

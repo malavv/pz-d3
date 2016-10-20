@@ -14,7 +14,10 @@
 
     properties: {
       x: String,
-      y: String
+      y: String,
+      color: String,
+      halfLeft: Boolean,
+      halfRight: Boolean
     },
 
     valueKey() { return this.y; },
@@ -23,15 +26,29 @@
       return 'circle'
     },
 
-    draw(xScale, yScale, meta, height) {
+    _clip() {
+      if (this.halfLeft != null)
+        return 'polygon(0 0, 50% 0, 50% 100%, 0% 100%)';
+      if (this.halfRight != null)
+        return 'polygon(50% 0, 50% 100%, 100% 100%, 100% 0)';
+      return null
+    },
+
+    draw(graph, xScale, yScale, meta, height, idx) {
       let xidx = 1;
       let yidx = 2;
 
       return (a, b, c) => {
+        let clipPath = this._clip();
         a
          .attr("cx", d => xScale(d[xidx]))
-         .attr("cy", d => yScale(d[yidx]))
+         .attr("cy", d => yScale(d[yidx] + (idx * 1000)))
          .attr("r", xScale.bandwidth() / 2.0);
+
+        if (clipPath != null)
+          a.attr("clip-path",  clipPath);
+        if (this.color != null)
+          a.attr('fill', this.color);
       }
     }
   });
